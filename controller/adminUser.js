@@ -63,25 +63,28 @@ router.post("/login", (req, res, next) => {
 })
 
 // 管理员列表
-router.get("/",  (req, res, next) => {
-    let {page= 1, rows= 10} = req.query
-    page = parseInt(page)
-    rows = parseInt(rows)
-    console.log(req.query)
-    adminUser
-        .find()
-        .skip(( page - 1 ) * rows)
-        .limit(rows)
-        .sort({ '_id': -1 })
-        .then(data => {
-        res.json({
-            code: 200,
-            data,
-            msg: '获取管理员列表成功'
-        })
-    }).catch(err => {
+router.get("/", async (req, res, next) => {
+    try {
+        let {page= 1, rows= 10} = req.query
+        page = parseInt(page)
+        rows = parseInt(rows)
+        console.log(req.query)
+        const data = await adminUser
+            .find()
+            .skip(( page - 1 ) * rows)
+            .limit(rows)
+            .sort({ '_id': -1 })
+        const count = await adminUser.count()
+        res.json(
+            {
+                code: 200,
+                data,
+                count,
+                msg: '获取管理员列表成功'
+            })
+    } catch (err) {
         next(err)
-    })
+    }
 })
 
 // 修改密码

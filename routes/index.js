@@ -3,10 +3,14 @@ const router = express.Router();
 const adminUser = require('../controller/adminUser')
 const category = require('../controller/category')
 const news = require('../controller/news')
-const slideShow = require('../controller/slideShow')
+const swipe = require('../controller/swipe')
+const topic = require('../controller/topic')
+const comment = require('../controller/comment')
 /* GET home page. */
 router.use('/admin/adminUser', adminUser);
-router.use('/category', category)
-router.use('/news', news)
-router.use('/slideShow', slideShow)
+router.use('/admin/category', category)
+router.use('/admin/news', news)
+router.use('/admin/swipe', swipe)
+router.use('/admin/topic', topic)
+router.use('/admin/comment', comment)
 module.exports = router;

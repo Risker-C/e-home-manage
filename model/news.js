@@ -20,11 +20,13 @@ const newsSchema = new mongoose.Schema({
     },
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'adminUser'
+        ref: 'adminUser',
+        isRequired: true
     },
     category: {
         type: Schema.Types.ObjectId,
-        ref: 'category'
+        ref: 'category',
+        isRequired: true
     }
 },{versionKey: false,timestamp: {createdAt: 'create_time', updatedAt: 'update_time'}})
 
