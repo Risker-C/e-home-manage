@@ -1,18 +1,19 @@
 const {Router} = require('express')
 const router = Router()
-const swipeModel = require('../model/swipe')
+const swiper = require('../model/swiper')
 const newsModel = require('../model/news')
 const auth = require('./auth')
 
 // 添加轮播图
 router.post('/add', auth, async (req, res, next) => {
     try {
-       const {header, news, index, type} = req.body
-        const data = await swipeModel.create({
+       const {header, news, index, category, type} = req.body
+        const data = await swiper.create({
             header,
             news,
             index,
-            type
+            type,
+            category
         })
         res.json({
             code: 200,
@@ -26,19 +27,25 @@ router.post('/add', auth, async (req, res, next) => {
 
 
 // 查询轮播图
-router.get('/swipeList', async (req, res, next) => {
+router.get('/swiperList', async (req, res, next) => {
     try {
        let {page=1, rows=10} = req.query
         page = parseInt(page)
         rows = parseInt(rows)
-        const data = await swipeModel
+        const data = await swiper
             .find()
             .skip((page - 1) * rows)
             .limit(rows)
             .populate({
                 path: 'news'
             })
-        const count = await swipeModel.count()
+            .populate({
+                path: 'category'
+            })
+            .sort({
+                index: '-1'
+            })
+        const count = await swiper.count()
         res.json({
             code: 200,
             data,
@@ -50,15 +57,40 @@ router.get('/swipeList', async (req, res, next) => {
     }
 })
 
+// 查询单张轮播图
+router.get('/id=:id', async (req, res, next) => {
+    try {
+       let {id} = req.params
+        console.log(id)
+        const data = await swiper
+            .findOne({_id: id})
+            .populate({
+                path: 'news',
+                select: 'title _id'
+            })
+            .populate({
+                path: 'category',
+                select: '_id title'
+            })
+        res.json({
+            code: 200,
+            data,
+            msg: 'succes'
+        })
+    } catch (err) {
+      next(err)
+    }
+})
+
 // 修改轮播图
 router.patch('/update',auth ,async (req, res, next) => {
     try {
         const {header, news, type, index, _id} = req.body
-        const swipe = await swipeModel.findOne({_id})
+        const swipe = await swiper.findOne({_id})
         if (swipe) {
             const newsdata = await newsModel.findOne({_id: news})
             if(newsdata) {
-                const data = await swipeModel
+                const data = await swiper
                     .updateOne({_id},{$set: {header, news, type, index}})
                 res.json({
                     code: 200,

@@ -30,5 +30,5 @@ const newsSchema = new mongoose.Schema({
     }
 },{versionKey: false,timestamp: {createdAt: 'create_time', updatedAt: 'update_time'}})
 
-const newsModel = mongoose.model('newsModel', newsSchema)
+const newsModel = mongoose.model('news', newsSchema)
 module.exports = newsModel

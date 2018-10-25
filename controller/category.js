@@ -68,7 +68,11 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
     try {
         let {id} = req.params
-        const data = await categoryModel.findOne({_id:id})
+        const data = await categoryModel
+            .findOne({_id:id})
+            .populate({
+                path: 'news'
+            })
         res.json({
             code: 200,
             data,

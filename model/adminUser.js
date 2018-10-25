@@ -26,7 +26,8 @@ const adminSchema = new mongoose.Schema({
     sex: Number,
     phone: Number,
     desc: String,
-    // age: Number,
+    age: Number,
+    email: String
     // hometown: String,     // 家庭住址
     // address: String,      // 工作地址
     // nation: String,       // 民族

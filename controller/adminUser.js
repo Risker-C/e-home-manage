@@ -12,7 +12,9 @@ router.post("/add", auth, (req, res, next) => {
         desc,
         nickname,
         sex,
-        phone
+        phone,
+        email,
+        age
     } = req.body
     console.log(req.body)
     adminUser.create({
@@ -23,7 +25,9 @@ router.post("/add", auth, (req, res, next) => {
         desc,
         nickname,
         phone,
-        sex
+        sex,
+        email,
+        age
     }).then(data => {
         res.json({
             code: 200,
@@ -68,7 +72,6 @@ router.get("/", async (req, res, next) => {
         let {page= 1, rows= 10} = req.query
         page = parseInt(page)
         rows = parseInt(rows)
-        console.log(req.query)
         const data = await adminUser
             .find()
             .skip(( page - 1 ) * rows)
@@ -81,6 +84,24 @@ router.get("/", async (req, res, next) => {
                 data,
                 count,
                 msg: '获取管理员列表成功'
+            })
+    } catch (err) {
+        next(err)
+    }
+})
+
+// 获取个人信息
+router.get("/id=:id", async (req, res, next) => {
+    try {
+        let {id} = req.params
+        const data = await adminUser
+            .findOne({_id: id})
+        data.password = ''
+        res.json(
+            {
+                code: 200,
+                data,
+                msg: '获取个人信息成功'
             })
     } catch (err) {
         next(err)
@@ -115,6 +136,42 @@ router.put('/',auth , (req, res, next) => {
         next(err)
     })
 
+})
+
+// 修改个人信息
+router.patch('/editAdmin',auth ,async (req, res, next) => {
+    try {
+        const {
+            header,
+            idCard,
+            desc,
+            nickname,
+            sex,
+            phone,
+            email,
+            age
+        } = req.body
+        const _id = req.session.user._id
+        const state = await adminUser.updateOne({_id},{$set: {
+                header,
+                idCard,
+                desc,
+                nickname,
+                sex,
+                phone,
+                age,
+                email}})
+        const data = await adminUser.findOne({_id})
+        data.password = ''
+        res.json({
+            code: 200,
+            msg: '个人信息修改成功',
+            data,
+            state
+        })
+    } catch (err) {
+      next(err)
+    }
 })
 
 // 退出登录

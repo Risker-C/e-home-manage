@@ -16,7 +16,8 @@ const categorySchema = mongoose.Schema({
     news: [
         {
             type: mongoose.SchemaTypes.ObjectId,
-            ref: 'newsModel'
+            ref: 'news',
+            unique: true
         }
     ]
 }, {versionKey: false, timestamp: {createdAt: 'create_time', updatedAt: 'update_time'}})

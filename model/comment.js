@@ -7,10 +7,12 @@ const comment = mongoose.Schema({
     },
     user: {
         type: mongoose.SchemaTypes.ObjectId,
+        ref: 'adminUser',
         required: true
     },
     topic: {
         type: mongoose.SchemaTypes.ObjectId,
+        ref: 'topic',
         required: true
     }
 }, {versionKey: false, timestamp: {createdAt: 'create_time', updatedAt: 'update_time'}})
